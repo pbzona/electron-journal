@@ -216,11 +216,11 @@ const RenderedWindow = styled.div`
     color: ${colors.teal};
   }
 
-  ul, ol {
+  ul {
     list-style: none;
   }
 
-  li::before {
+  ul > li::before {
     content: "•";
     color: ${colors.red};
     margin-right: 8px;
