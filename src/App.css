@@ -31,7 +31,7 @@
   color: white;
 }
 
-.ace_editor .ace_string {
+.ace_editor .ace_string, .ace_string {
   color: var(--red);
 }
 

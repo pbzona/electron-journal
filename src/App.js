@@ -102,9 +102,18 @@ class App extends Component {
 
 export default App;
 
+const colors = {
+  blue: '#29485b',
+  lightBlue: '#607C8D',
+  darkBlue: '#18384B',
+  red: '#BD2B5C',
+  teal: '#1bb398',
+  gray: '#d8d8d8'
+};
+
 const Header = styled.header`
-  background-color: #29485b;
-  color: #607C8D;
+  background-color: ${colors.blue};
+  color: ${colors.lightBlue};
   font-size: 0.8rem;
   height: 23px;
   text-align: center;
@@ -124,14 +133,14 @@ const LoadingMessage = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #29485b;
+  background-color: ${colors.blue};
   min-height: 100vh;
 `;
 
 const LoadingButton = styled.button`
   padding: 10px 30px;
-  background-color: #18384B;
-  color: #607C8D;
+  background-color: ${colors.darkBlue};
+  color: ${colors.lightBlue};
   border: none;
 `;
 
@@ -143,27 +152,32 @@ const Split = styled.div`
 const CodeWindow = styled.div`
   flex: 1;
   padding-top: 2rem;
-  background-color: #29485b;
+  background-color: ${colors.blue};
 `;
 
 const RenderedWindow = styled.div`
-  background-color: #29485b;
+  background-color: ${colors.blue};
   width: 35%;
   padding: 20px;
-  color: #d8d8d8;
-  border-left: 1px solid #18384B;
+  color: ${colors.gray};
+  border-left: 1px solid ${colors.darkBlue};
 
   h1, h2, h3, h4, h5, h6 {
     color: #fff;
   };
 
   h1 {
-    border-bottom: solid 3px #1bb398;
+    border-bottom: solid 3px ${colors.teal};
+    padding-bottom: 10px;
+  };
+
+  h2 {
+    border-bottom: solid 1px ${colors.red};
     padding-bottom: 10px;
   };
 
   a {
-    color: #1bb398;
+    color: ${colors.teal};
   }
 
   ul, ol {
@@ -172,7 +186,7 @@ const RenderedWindow = styled.div`
 
   li::before {
     content: "•";
-    color: #BD2B5C;
+    color: ${colors.red};
     margin-right: 8px;
   }
 `;
