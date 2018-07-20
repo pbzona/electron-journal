@@ -57,9 +57,17 @@ class App extends Component {
         const ext = path.extname(file);
         return ext === '.md' || ext === '.markdown' || ext === '.txt';
       });
-      const filesData = filteredFiles.map(file => ({
-        path: `${directory}/${file}`
-      }));
+      const filesData = filteredFiles.map(file => {
+        const date = file.substr(
+          file.indexOf('_') + 1,
+          file.indexOf('.') - file.indexOf('_') - 1
+        );
+        return {
+          date,
+          path: `${directory}/${file}`,
+          title: file.substr(0, file.indexOf('_'))
+        }
+    });
 
       this.setState(
         {
@@ -107,7 +115,12 @@ class App extends Component {
                   onClick={this.changeFile(index)}
                   active={activeIndex === index}
                 >
-                  {file.path}
+                  <p className="title">
+                    {file.title}
+                  </p>
+                  <p className="date">
+                    {file.date}
+                  </p>
                 </FileButton>
               ))}
             </FilesWindow>
@@ -192,7 +205,7 @@ const LoadingButton = styled.button`
 
 const Split = styled.div`
   display: flex;
-  min-height: 100vh;
+  min-height: calc(100vh - 23px);
 `;
 
 const CodeWindow = styled.div`
@@ -259,6 +272,7 @@ const FileButton = styled.button`
   width: 100%;
   background: ${colors.altDarkBlue};
   opacity: 0.4;
+  text-align: left;
   color: #fff;
   border: none;
   border-bottom: solid 1px ${colors.blue};
@@ -274,4 +288,14 @@ const FileButton = styled.button`
     opacity: 1;
     border-left: solid 4px ${colors.red};
   `}
+
+  .title {
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin: 0 0 5px;
+  }
+
+  .date {
+    margin: 0;
+  }
 `;
