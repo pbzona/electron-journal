@@ -1,5 +1,6 @@
 // Import Node modules
 const fs = require('fs');
+const path = require('path');
 
 // Modules to control application life and create native browser window
 const { app, BrowserWindow, dialog, Menu } = require('electron')
@@ -25,14 +26,11 @@ function createWindow() {
       label: 'File',
       submenu: [
         {
-          label: 'Open File',
+          label: 'Open Folder',
           accelerator: 'CmdOrCtrl+O',
           click() {
-            openFile();
+            openDir();
           }
-        },
-        {
-          label: 'Open Folder'
         }
       ]
     },
@@ -188,4 +186,24 @@ function openFile() {
 
   // Send fileContent to renderer
   mainWindow.webContents.send('new-file', fileContent);
+};
+
+// Open directory
+function openDir() {
+  const directory = dialog.showOpenDialog(mainWindow, {
+    properties: ['openDirectory']
+  });
+
+  if (!directory) return;
+  const dir = directory[0]
+
+  fs.readdir(dir, (err, files) => {
+    const filteredFiles = files.filter(file => {
+      const ext = path.extname(file);
+      return ext === '.md' || ext === '.markdown' || ext === '.txt';
+    });
+    const filePaths = filteredFiles.map(file => `${dir}/${file}`);
+
+    mainWindow.send('new-dir', filePaths, dir);
+  });
 };
