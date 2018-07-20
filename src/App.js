@@ -73,7 +73,7 @@ const Header = styled.header`
 
 const Split = styled.div`
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
 `;
 
 const CodeWindow = styled.div`
