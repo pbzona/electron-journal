@@ -56,21 +56,35 @@ class App extends Component {
         path: `${directory}/${file}`
       }));
 
-      this.setState({
-        filesData
-      });
+      this.setState(
+        {
+          filesData
+        }, () => this.loadFile(0)
+      );
+    });
+  }
+
+  loadFile = index => {
+    const { filesData } = this.state;
+
+    const content = fs.readFileSync(filesData[index].path).toString();
+
+    this.setState({
+      loadedFile: content
     });
   }
 
   render() {
     return (
-      <div className="App">
+      <AppWrap>
         <Header>Journal</Header>
         {this.state.directory ? (
           <Split>
-            <div>
-              {this.state.filesData.map(file => <h1>{file.path}</h1>)}
-            </div>
+            <FilesWindow>
+              {this.state.filesData.map((file, index) => (
+                <button onClick={() => this.loadFile(index)}>{file.path}</button>
+              ))}
+            </FilesWindow>
             <CodeWindow>
               <AceEditor
                 mode="markdown"
@@ -95,7 +109,7 @@ class App extends Component {
             </LoadingButton>
           </LoadingMessage>
         )}
-      </div>
+      </AppWrap>
     );
   }
 }
@@ -106,13 +120,18 @@ const colors = {
   blue: '#29485b',
   lightBlue: '#607C8D',
   darkBlue: '#18384B',
+  altBlue: '#3F5F73',
   red: '#BD2B5C',
   teal: '#1bb398',
   gray: '#d8d8d8'
 };
 
+const AppWrap = styled.div`
+  margin-top: 23px;
+`;
+
 const Header = styled.header`
-  background-color: ${colors.blue};
+  background-color: ${colors.darkBlue};
   color: ${colors.lightBlue};
   font-size: 0.8rem;
   height: 23px;
@@ -153,6 +172,23 @@ const CodeWindow = styled.div`
   flex: 1;
   padding-top: 2rem;
   background-color: ${colors.blue};
+`;
+
+const FilesWindow = styled.div`
+  background: ${colors.darkBlue};
+  border-right: 1px solid ${colors.altBlue};
+  position: relative;
+  width: 20%;
+  &:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    pointer-events: none;
+    box-shadow: -5px 0 20px rgba(0, 0, 0, 0.3) inset;
+  }
 `;
 
 const RenderedWindow = styled.div`
