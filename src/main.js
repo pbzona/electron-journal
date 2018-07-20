@@ -1,6 +1,5 @@
 // Import Node modules
 const fs = require('fs');
-const path = require('path');
 
 // Modules to control application life and create native browser window
 const { app, BrowserWindow, dialog, Menu } = require('electron')
@@ -196,14 +195,5 @@ function openDir() {
 
   if (!directory) return;
   const dir = directory[0]
-
-  fs.readdir(dir, (err, files) => {
-    const filteredFiles = files.filter(file => {
-      const ext = path.extname(file);
-      return ext === '.md' || ext === '.markdown' || ext === '.txt';
-    });
-    const filePaths = filteredFiles.map(file => `${dir}/${file}`);
-
-    mainWindow.send('new-dir', filePaths, dir);
-  });
+  mainWindow.webContents.send('new-dir', dir);
 };

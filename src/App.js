@@ -12,15 +12,24 @@ import './App.css';
 
 const settings = window.require('electron-settings');
 const { ipcRenderer } = window.require('electron');
+const fs = window.require('fs');
+const path = window.require('path');
 
 class App extends Component {
   state = {
     loadedFile: '',
-    directory: settings.get('directory') || null
+    directory: settings.get('directory') || null,
+    filesData: []
   };
 
   constructor() {
     super();
+
+    // Load files from directory on app startup
+    const directory = settings.get('directory');
+    if (directory) {
+      this.loadAndReadFiles(directory);
+    }
 
     ipcRenderer.on('new-file', (event, fileContent) => {
       this.setState({
@@ -28,11 +37,28 @@ class App extends Component {
       });
     });
 
-    ipcRenderer.on('new-dir', (event, filePaths, dir) => {
+    ipcRenderer.on('new-dir', (event, directory) => {
       this.setState({
-        directory: dir
+        directory
       });
-      settings.set('directory', dir);
+      settings.set('directory', directory);
+      this.loadAndReadFiles(directory);
+    });
+  }
+
+  loadAndReadFiles = directory => {
+    fs.readdir(directory, (err, files) => {
+      const filteredFiles = files.filter(file => {
+        const ext = path.extname(file);
+        return ext === '.md' || ext === '.markdown' || ext === '.txt';
+      });
+      const filesData = filteredFiles.map(file => ({
+        path: `${directory}/${file}`
+      }));
+
+      this.setState({
+        filesData
+      });
     });
   }
 
@@ -42,6 +68,9 @@ class App extends Component {
         <Header>Journal</Header>
         {this.state.directory ? (
           <Split>
+            <div>
+              {this.state.filesData.map(file => <h1>{file.path}</h1>)}
+            </div>
             <CodeWindow>
               <AceEditor
                 mode="markdown"
@@ -122,7 +151,7 @@ const RenderedWindow = styled.div`
   width: 35%;
   padding: 20px;
   color: #d8d8d8;
-  border-left: 1px solid #302b3a;
+  border-left: 1px solid #18384B;
 
   h1, h2, h3, h4, h5, h6 {
     color: #fff;
