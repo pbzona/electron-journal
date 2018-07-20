@@ -1,23 +1,30 @@
+:root {
+  --blue: #29485b;
+  --teal: #1bb398;
+  --red: #BD2B5C;
+  --gray: #d8d8d8;
+}
+
 .ace_editor {
-  background-color: #191324 !important;
+  background-color: var(--blue) !important;
   color: white;
 }
 
 .ace_editor .ace_gutter {
-  background: #191324;
+  background: var(--blue);
   color: white;
 }
 
 .ace_editor .ace_list {
-  color: #d8d8d8;
+  color: var(--gray);
 }
 
 .ace_editor .ace_gutter-active-line {
-  background-color: #373142;
+  background-color: var(--blue);
 }
 
 .ace_editor .ace_heading {
-  color: #82d8d8;
+  color: var(--teal);
 }
 
 .ace_editor .ace_cursor {
@@ -25,6 +32,6 @@
 }
 
 .ace_editor .ace_string {
-  color: #e54b4b;
+  color: var(--red);
 }
 

@@ -64,18 +64,21 @@ class App extends Component {
 export default App;
 
 const Header = styled.header`
-  background-color: #191324;
-  color: #75717c;
+  background-color: #29485b;
+  color: #607C8D;
   font-size: 0.8rem;
   height: 23px;
   text-align: center;
   position: fixed;
-  box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.4);
+  box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.2);
   top: 0;
   left: 0;
   width: 100%;
   z-index: 10;
   -webkit-app-region: drag;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const Split = styled.div`
@@ -86,26 +89,36 @@ const Split = styled.div`
 const CodeWindow = styled.div`
   flex: 1;
   padding-top: 2rem;
-  background-color: #191324;
+  background-color: #29485b;
 `;
 
 const RenderedWindow = styled.div`
-  background-color: #191324;
+  background-color: #29485b;
   width: 35%;
   padding: 20px;
-  color: #fff;
+  color: #d8d8d8;
   border-left: 1px solid #302b3a;
 
   h1, h2, h3, h4, h5, h6 {
-    color: #82d8d8;
+    color: #fff;
   };
 
   h1 {
-    border-bottom: solid 3px #e54b4b;
+    border-bottom: solid 3px #1bb398;
     padding-bottom: 10px;
   };
 
   a {
-    color: #e54b4b;
+    color: #1bb398;
+  }
+
+  ul, ol {
+    list-style: none;
+  }
+
+  li::before {
+    content: "•";
+    color: #BD2B5C;
+    margin-right: 8px;
   }
 `;
