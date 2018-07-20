@@ -19,6 +19,7 @@ class App extends Component {
   state = {
     loadedFile: '',
     directory: settings.get('directory') || null,
+    activeIndex: 0,
     filesData: []
   };
 
@@ -66,11 +67,26 @@ class App extends Component {
 
   loadFile = index => {
     const { filesData } = this.state;
-
     const content = fs.readFileSync(filesData[index].path).toString();
 
     this.setState({
-      loadedFile: content
+      loadedFile: content,
+      activeIndex: index
+    });
+  }
+
+  changeFile = index => () => {
+    const { activeIndex } = this.state;
+    if (index !== activeIndex) {
+      this.saveFile();
+      this.loadFile(index);
+    }
+  }
+
+  saveFile = () => {
+    const { activeIndex, loadedFile, filesData } = this.state;
+    fs.writeFile(filesData[activeIndex].path, loadedFile, err => {
+      if (err) return console.log(err);
     });
   }
 
@@ -82,7 +98,7 @@ class App extends Component {
           <Split>
             <FilesWindow>
               {this.state.filesData.map((file, index) => (
-                <button onClick={() => this.loadFile(index)}>{file.path}</button>
+                <button onClick={this.changeFile(index)}>{file.path}</button>
               ))}
             </FilesWindow>
             <CodeWindow>
@@ -187,7 +203,7 @@ const FilesWindow = styled.div`
     top: 0;
     bottom: 0;
     pointer-events: none;
-    box-shadow: -5px 0 20px rgba(0, 0, 0, 0.3) inset;
+    box-shadow: -5px 0 20px rgba(0, 0, 0, 0.1) inset;
   }
 `;
 
