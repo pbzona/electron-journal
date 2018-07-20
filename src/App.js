@@ -38,6 +38,10 @@ class App extends Component {
       });
     });
 
+    ipcRenderer.on('save-file', event => {
+      this.saveFile();
+    });
+
     ipcRenderer.on('new-dir', (event, directory) => {
       this.setState({
         directory
@@ -91,14 +95,20 @@ class App extends Component {
   }
 
   render() {
+    const { activeIndex, filesData, directory, loadedFile } = this.state;
     return (
       <AppWrap>
         <Header>Journal</Header>
-        {this.state.directory ? (
+        {directory ? (
           <Split>
             <FilesWindow>
-              {this.state.filesData.map((file, index) => (
-                <button onClick={this.changeFile(index)}>{file.path}</button>
+              {filesData.map((file, index) => (
+                <FileButton
+                  onClick={this.changeFile(index)}
+                  active={activeIndex === index}
+                >
+                  {file.path}
+                </FileButton>
               ))}
             </FilesWindow>
             <CodeWindow>
@@ -111,11 +121,11 @@ class App extends Component {
                   });
                 }}
                 name="markdown_editor"
-                value={this.state.loadedFile}
+                value={loadedFile}
               />
             </CodeWindow>
             <RenderedWindow>
-              <Markdown>{this.state.loadedFile}</Markdown>
+              <Markdown>{loadedFile}</Markdown>
             </RenderedWindow>
           </Split>
         ) : (
@@ -137,6 +147,7 @@ const colors = {
   lightBlue: '#607C8D',
   darkBlue: '#18384B',
   altBlue: '#3F5F73',
+  altDarkBlue: '#082333',
   red: '#BD2B5C',
   teal: '#1bb398',
   gray: '#d8d8d8'
@@ -241,4 +252,26 @@ const RenderedWindow = styled.div`
     color: ${colors.red};
     margin-right: 8px;
   }
+`;
+
+const FileButton = styled.button`
+  padding: 10px;
+  width: 100%;
+  background: ${colors.altDarkBlue};
+  opacity: 0.4;
+  color: #fff;
+  border: none;
+  border-bottom: solid 1px ${colors.blue};
+  transition: 0.3s ease all;
+  &:hover {
+    opacity: 1;
+    border-left: solid 4px ${colors.red};
+  }
+  &:focus {
+    outline: none;
+  }
+  ${({ active }) => active && `
+    opacity: 1;
+    border-left: solid 4px ${colors.red};
+  `}
 `;
