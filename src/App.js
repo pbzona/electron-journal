@@ -10,13 +10,14 @@ import 'brace/theme/dracula';
 
 import './App.css';
 
+const settings = window.require('electron-settings');
 const { ipcRenderer } = window.require('electron');
 
 class App extends Component {
   state = {
     loadedFile: '',
-    directory: ''
-  }
+    directory: settings.get('directory') || null
+  };
 
   constructor() {
     super();
@@ -31,6 +32,7 @@ class App extends Component {
       this.setState({
         directory: dir
       });
+      settings.set('directory', dir);
     });
   }
 
@@ -38,24 +40,32 @@ class App extends Component {
     return (
       <div className="App">
         <Header>Journal</Header>
-        <Split>
-          <CodeWindow>
-            <AceEditor
-              mode="markdown"
-              theme="dracula"
-              onChange={newContent => {
-                this.setState({
-                  loadedFile: newContent
-                });
-              }}
-              name="markdown_editor"
-              value={this.state.loadedFile}
-            />
-          </CodeWindow>
-          <RenderedWindow>
-            <Markdown>{this.state.loadedFile}</Markdown>
-          </RenderedWindow>
-        </Split>
+        {this.state.directory ? (
+          <Split>
+            <CodeWindow>
+              <AceEditor
+                mode="markdown"
+                theme="dracula"
+                onChange={newContent => {
+                  this.setState({
+                    loadedFile: newContent
+                  });
+                }}
+                name="markdown_editor"
+                value={this.state.loadedFile}
+              />
+            </CodeWindow>
+            <RenderedWindow>
+              <Markdown>{this.state.loadedFile}</Markdown>
+            </RenderedWindow>
+          </Split>
+        ) : (
+          <LoadingMessage>
+            <LoadingButton>
+              <h1>Open a folder to get started</h1>
+            </LoadingButton>
+          </LoadingMessage>
+        )}
       </div>
     );
   }
@@ -79,6 +89,21 @@ const Header = styled.header`
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+const LoadingMessage = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #29485b;
+  min-height: 100vh;
+`;
+
+const LoadingButton = styled.button`
+  padding: 10px 30px;
+  background-color: #18384B;
+  color: #607C8D;
+  border: none;
 `;
 
 const Split = styled.div`
