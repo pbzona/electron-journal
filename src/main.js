@@ -1,3 +1,6 @@
+// ! To start the react devtools, run this in the app devtools:
+// ! require('electron-react-devtools').install();
+
 // Import Node modules
 const fs = require('fs');
 
