@@ -21,6 +21,8 @@ class App extends Component {
     loadedFile: '',
     directory: settings.get('directory') || null,
     activeIndex: 0,
+    newEntry: false,
+    newEntryName: '',
     filesData: []
   };
 
@@ -108,18 +110,57 @@ class App extends Component {
   saveFile = () => {
     const { activeIndex, loadedFile, filesData } = this.state;
     fs.writeFile(filesData[activeIndex].path, loadedFile, err => {
-      if (err) return console.log(err);
+      if (err) return console.error(err);
+    });
+  }
+
+  newFile = e => {
+    e.preventDefault();
+    const { newEntryName, directory, filesData } = this.state;
+    const fileDate = dateFns.format(new Date(), 'MM-DD-YYYY');
+    const filePath = `${directory}/${newEntryName}_${fileDate}.md`;
+
+    fs.writeFile(filePath, '', err => {
+      if (err) return console.error(err);
+
+      filesData.unshift({
+        path: filePath,
+        date: fileDate,
+        title: newEntryName
+      });
+
+      this.setState({
+        newEntry: false,
+        newEntryName: '',
+        loadedFile: '',
+        filesData
+      });
     });
   }
 
   render() {
-    const { activeIndex, filesData, directory, loadedFile } = this.state;
+    const { activeIndex, filesData, directory, loadedFile, newEntry, newEntryName } = this.state;
     return (
       <AppWrap>
         <Header>Journal</Header>
         {directory ? (
           <Split>
             <FilesWindow>
+              <Button
+                onClick={() => this.setState({newEntry: !newEntry})}
+              >
+                {this.state.newEntry ? 'Cancel' : '+ New Entry'}
+              </Button>
+              { newEntry &&
+                <form onSubmit={this.newFile}>
+                  <input
+                    value={newEntryName}
+                    onChange={e => this.setState({newEntryName: e.target.value})}
+                    autoFocus
+                    type="text"
+                  />
+                </form>
+              }
               {filesData.map((file, index) => (
                 <FileButton
                   onClick={this.changeFile(index)}
@@ -307,6 +348,22 @@ const FileButton = styled.button`
 
   .date {
     margin: 0;
+  }
+`;
+
+const Button = styled.button`
+  background: transparent;
+  color: white;
+  border: solid 1px ${colors.teal};
+  border-radius: 4px;
+  margin: 1rem auto;
+  font-size: 1rem;
+  transition: 0.3s ease all;
+  padding: 5px 10px;
+  display: block;
+  &:hover {
+    background: ${colors.teal};
+    color: ${colors.darkBlue};
   }
 `;
 
