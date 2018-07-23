@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Markdown from 'markdown-to-jsx';
 import styled from 'styled-components';
+import dateFns from 'date-fns';
 
 // Import editor and some dependencies
 import AceEditor from 'react-ace';
@@ -67,7 +68,16 @@ class App extends Component {
           path: `${directory}/${file}`,
           title: file.substr(0, file.indexOf('_'))
         }
-    });
+      });
+
+      filesData.sort((a, b) => {
+        const aDate = new Date(a.date);
+        const bDate = new Date(b.date);
+        const aSec = aDate.getTime();
+        const bSec = bDate.getTime();
+
+        return bSec - aSec;
+      });
 
       this.setState(
         {
@@ -119,7 +129,7 @@ class App extends Component {
                     {file.title}
                   </p>
                   <p className="date">
-                    {file.date}
+                    {formatDate(file.date)}
                   </p>
                 </FileButton>
               ))}
@@ -299,3 +309,5 @@ const FileButton = styled.button`
     margin: 0;
   }
 `;
+
+const formatDate = date => dateFns.format(new Date(date), 'MMMM Do YYYY');
