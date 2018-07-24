@@ -3,9 +3,13 @@
 
 // Import Node modules
 const fs = require('fs');
+const path = require('path');
 
 // Modules to control application life and create native browser window
 const { app, BrowserWindow, dialog, Menu } = require('electron')
+
+// Checks if app is in dev mode
+const isDev = require('electron-is-dev');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -20,7 +24,11 @@ function createWindow() {
   });
 
   // and load the index.html of the app.
-  mainWindow.loadURL('http://localhost:3000')
+  mainWindow.loadURL(
+    isDev
+    ? 'http://localhost:3000'
+    : `file://${path.join(__dirname, '../build/index.html')}`
+  );
 
   // Create the menu
   const template = [
@@ -207,3 +215,4 @@ function openDir() {
   const dir = directory[0]
   mainWindow.webContents.send('new-dir', dir);
 };
+
